@@ -1,27 +1,29 @@
-# Gus-photos
+# Gus-house
 
 Just some random photos from Facebook.
 
-This README outlines the details of collaborating on this Ember application.
+This is just a static website and it was made in twenty minutes. It's hosted at [http://gus.photos/](http://gus.photos/).
 
-## Installation
+Enjoy :)
 
-* `git clone` this repository
-* `npm install`
-* `bower install`
+## Running Locally
 
-## Running
+Make sure you have [Node.js](http://nodejs.org/) and the [Heroku Toolbelt](https://toolbelt.heroku.com/) installed.
 
-* `ember server`
-* Visit your app at http://localhost:4200.
+```sh
+$ npm install
+$ npm start
+```
 
-## Running Tests
+Your app should now be running on [localhost:5000](http://localhost:5000/).
 
-* `ember test`
-* `ember test --server`
+## Deploying to Heroku
 
-## Building
+```
+$ heroku create
+$ git push heroku master
+$ heroku open
+```
+or
 
-* `ember build`
-
-For more information on using ember-cli, visit [http://iamstef.net/ember-cli/](http://iamstef.net/ember-cli/).
+[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)

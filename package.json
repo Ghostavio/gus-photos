@@ -1,38 +1,21 @@
 {
   "name": "gus-photos",
-  "version": "0.0.0",
-  "private": true,
-  "directories": {
-    "doc": "doc",
-    "test": "test"
-  },
+  "version": "0.0.1",
+  "description": "Just some random photos from Facebook",
+  "main": "index.js",
   "scripts": {
-    "start": "ember server",
-    "build": "ember build",
-    "test": "ember test",
-    "postinstall": "./node_modules/bower/bin/bower install"
-  },
-  "repository": "https://github.com/stefanpenner/ember-cli",
-  "engines": {
-    "node": ">= 0.10.0"
-  },
-  "author": "",
-  "license": "MIT",
-  "devDependencies": {
-    "body-parser": "^1.2.0",
-    "broccoli-ember-hbs-template-compiler": "^1.5.0",
-    "ember-cli": "0.0.34",
-    "express": "^4.1.1",
-    "glob": "^3.2.9",
-    "originate": "0.1.5"
+    "start": "node index.js"
   },
   "dependencies": {
-    "bower": "1.3.5",
-    "ember-cli": "0.0.34",
-    "originate": "0.1.5",
-    "broccoli-ember-hbs-template-compiler": "^1.5.0",
-    "express": "^4.1.1",
-    "body-parser": "^1.2.0",
-    "glob": "^3.2.9"
-  }
+    "ejs": "2.3.3",
+    "express": "4.13.3"
+  },
+  "engines": {
+    "node": "5.9.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ghostavio/gus-photos"
+  },
+  "license": "MIT"
 }

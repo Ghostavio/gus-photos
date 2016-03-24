@@ -1,0 +1,20 @@
+html, body {
+  margin: 20px;
+  padding: 0;
+  height: 100%;
+  max-height: 100%;
+}
+
+body {
+  text-align: center;
+}
+
+.container {
+  max-width: 980px;
+  margin: auto;
+}
+
+.fb-post {
+  margin: 10px;
+  width: 466px;
+}
