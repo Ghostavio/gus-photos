@@ -1,4 +1,4 @@
-# Gus-house
+# Gus-photos
 
 Just some random photos from Facebook.
 
