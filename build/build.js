@@ -10,6 +10,7 @@ const site = JSON.parse(fs.readFileSync('config/site.json', 'utf8'));
 const DIST = 'dist';
 const expand = p => p.replace(/^~/, os.homedir());
 const LIMIT = process.env.GP_LIMIT ? Number(process.env.GP_LIMIT) : Infinity;
+const SKIP_ENCODE = process.env.GP_SKIP_ENCODE === '1'; // reuse existing tiers; just re-read EXIF + re-render
 
 async function buildAlbum(slug) {
   const album = JSON.parse(fs.readFileSync(`albums/${slug}/album.json`, 'utf8'));
@@ -25,7 +26,8 @@ async function buildAlbum(slug) {
   for (const f of files) {
     const src = path.join(srcDir, f);
     const meta = await readExif(src);
-    await makeTiers(src, { album: slug, id: meta.id, outDir: path.join(DIST, 'img') });
+    if (!meta.datetime) console.warn(`  ⚠ ${meta.id} has no DateTimeOriginal — will sort/group incorrectly`);
+    if (!SKIP_ENCODE) await makeTiers(src, { album: slug, id: meta.id, outDir: path.join(DIST, 'img') });
     photos.push(meta);
     if (++i % 25 === 0) console.log(`  …${i}/${files.length}`);
   }
@@ -38,7 +40,9 @@ async function buildAlbum(slug) {
 }
 
 async function main() {
-  fs.rmSync(DIST, { recursive: true, force: true });
+  if (!SKIP_ENCODE) fs.rmSync(DIST, { recursive: true, force: true });
+  fs.mkdirSync(DIST, { recursive: true });
+  fs.rmSync(path.join(DIST, 'assets'), { recursive: true, force: true });
   fs.cpSync('site/assets', path.join(DIST, 'assets'), { recursive: true });
   fs.writeFileSync(path.join(DIST, 'CNAME'), 'gus.photos\n');
   const slugs = fs.readdirSync('albums').filter(s => fs.existsSync(`albums/${s}/album.json`));
