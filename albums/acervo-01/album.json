@@ -1,18 +1,153 @@
 {
   "slug": "acervo-01",
   "kicker": "Acervo 01 — 2019",
-  "title": { "en": "From seed to flower", "pt": "Da semente à flor" },
+  "title": {
+    "en": "From seed to flower",
+    "pt": "Da semente à flor"
+  },
   "intro": {
     "en": "From May 31 to October 1, 2019, I grew three plants of my own — start to finish, seed to flower. This is the complete collection: 500 photographs documenting all five months of the grow, shot on an iPad Pro.",
     "pt": "De 31 de maio a 1º de outubro de 2019, cultivei minha própria maconha — três plantas, da semente à flor. Este é o acervo completo: 500 fotografias documentando os cinco meses de cultivo, do início ao fim, registradas num iPad Pro."
   },
   "source": "~/maconhas-originals",
   "phases": [
-    { "from": "2019-05-31", "to": "2019-06-27", "label": { "en": "Germination & Seedling", "pt": "Germinação e Muda" } },
-    { "from": "2019-06-28", "to": "2019-08-05", "label": { "en": "Vegetative", "pt": "Vegetativo" } },
-    { "from": "2019-08-06", "to": "2019-09-30", "label": { "en": "Flowering", "pt": "Floração" } },
-    { "from": "2019-10-01", "to": "2019-10-01", "label": { "en": "Harvest", "pt": "Colheita" } }
+    {
+      "from": "2019-05-31",
+      "to": "2019-06-27",
+      "label": {
+        "en": "Germination & Seedling",
+        "pt": "Germinação e Muda"
+      }
+    },
+    {
+      "from": "2019-06-28",
+      "to": "2019-08-05",
+      "label": {
+        "en": "Vegetative",
+        "pt": "Vegetativo"
+      }
+    },
+    {
+      "from": "2019-08-06",
+      "to": "2019-09-30",
+      "label": {
+        "en": "Flowering",
+        "pt": "Floração"
+      }
+    },
+    {
+      "from": "2019-10-01",
+      "to": "2019-10-01",
+      "label": {
+        "en": "Harvest",
+        "pt": "Colheita"
+      }
+    }
   ],
-  "favorites": [],
-  "bonus": { "photos": [], "videos": [] }
+  "favorites": [
+    "IMG_2223",
+    "IMG_2295",
+    "IMG_2344",
+    "IMG_2374",
+    "IMG_2396",
+    "IMG_2432",
+    "IMG_2447",
+    "IMG_2448",
+    "IMG_2564",
+    "IMG_2632",
+    "IMG_2666",
+    "IMG_2682",
+    "IMG_2700",
+    "IMG_2711",
+    "IMG_2725",
+    "IMG_2746",
+    "IMG_2749",
+    "IMG_2767",
+    "IMG_2773",
+    "IMG_2796",
+    "IMG_2803",
+    "IMG_2863",
+    "IMG_2867",
+    "IMG_2876",
+    "IMG_2884",
+    "IMG_2937",
+    "IMG_3061",
+    "IMG_3167",
+    "IMG_3204",
+    "IMG_3268",
+    "IMG_3291",
+    "IMG_3293",
+    "IMG_3301",
+    "IMG_3345",
+    "IMG_3347",
+    "IMG_3350",
+    "IMG_3358",
+    "IMG_3382",
+    "IMG_3387",
+    "IMG_3403",
+    "IMG_3413",
+    "IMG_3431",
+    "IMG_3437",
+    "IMG_3440",
+    "IMG_3442",
+    "IMG_3449",
+    "IMG_3492",
+    "IMG_3499",
+    "IMG_3506",
+    "IMG_3508",
+    "IMG_3510",
+    "IMG_3538",
+    "IMG_3539",
+    "IMG_3540",
+    "IMG_3548",
+    "IMG_3572",
+    "IMG_3579",
+    "IMG_3597",
+    "IMG_3634",
+    "IMG_3635",
+    "IMG_3638",
+    "IMG_3643",
+    "IMG_3648",
+    "IMG_3652",
+    "IMG_3657",
+    "IMG_3667",
+    "IMG_3670",
+    "IMG_3673",
+    "IMG_3675",
+    "IMG_3727",
+    "IMG_3728",
+    "IMG_3732",
+    "IMG_3733",
+    "IMG_3734",
+    "IMG_3736",
+    "IMG_3737",
+    "IMG_3863",
+    "IMG_3865",
+    "IMG_3866",
+    "IMG_3867",
+    "IMG_3873",
+    "IMG_3874",
+    "IMG_3877",
+    "IMG_3886",
+    "IMG_3941",
+    "IMG_3944",
+    "IMG_3945",
+    "IMG_3949",
+    "IMG_3951",
+    "IMG_3960",
+    "IMG_3963",
+    "IMG_3990",
+    "IMG_3991",
+    "IMG_3992",
+    "IMG_3993",
+    "IMG_3998",
+    "IMG_4031",
+    "IMG_4041",
+    "IMG_4062",
+    "IMG_4098"
+  ],
+  "bonus": {
+    "photos": [],
+    "videos": []
+  }
 }

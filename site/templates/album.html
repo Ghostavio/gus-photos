@@ -37,7 +37,7 @@
   <div class="tabs">
     <button class="tab on" data-view="timeline"><span class="en">Timeline</span><span class="pt">Linha do tempo</span></button>
     <button class="tab" data-view="grid"><span class="en">Grid</span><span class="pt">Grade</span></button>
-    <button class="tab" data-view="favorites"><span class="star">★</span> <span class="en">Favorites</span><span class="pt">Favoritas</span> <small>~50</small></button>
+    <button class="tab" data-view="favorites"><span class="star">★</span> <span class="en">Favorites</span><span class="pt">Favoritas</span> <small></small></button>
     <button class="tab" data-view="bonus"><span class="en">Bonus</span><span class="pt">Bônus</span></button>
   </div>
 
@@ -92,4 +92,10 @@
       <div id="giscus-mount"></div>
     </div>
   </aside>
+</div>
+
+<div class="vmodal" id="vmodal">
+  <button class="vm-close" id="vmClose" title="Close (Esc)">&times;</button>
+  <video id="vmVideo" controls playsinline preload="metadata"></video>
+  <a class="vm-dl" id="vmDl" href="#" download><span class="en">Download original</span><span class="pt">Baixar original</span></a>
 </div>

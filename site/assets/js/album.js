@@ -2,18 +2,23 @@
    Plain browser <script src> file: no imports/exports. Single IIFE, uses globals. */
 (function(){
   const M = window.__MANIFEST__, SITE = window.__SITE__ || {};
-  const byId = Object.fromEntries(M.photos.map(p => [p.id, p]));
-  const ORDER = Object.fromEntries(M.photos.map((p,i) => [p.id, i])); // chronological index
+  const BONUS = (M.bonus && M.bonus.photos) || [];
+  // ALL = main timeline + bonus, chronological. Used for id/day lookups, favorites, hero —
+  // so bonus photos open in the lightbox and bonus favorites join the carousel. Timeline/Grid
+  // still iterate M.photos only (bonus is its own tab).
+  const ALL = [...M.photos, ...BONUS].sort((a,b)=> a.datetime<b.datetime?-1 : a.datetime>b.datetime?1 : 0);
+  const byId = Object.fromEntries(ALL.map(p => [p.id, p]));
+  const ORDER = Object.fromEntries(ALL.map((p,i) => [p.id, i])); // chronological index (main + bonus)
   const THUMB = id => byId[id].tiers.thumb;
   const VIEW  = id => byId[id].tiers.view;
   const FULL  = id => byId[id].tiers.full;
   const META  = id => byId[id];
-  let HERO_FAVS = M.photos.filter(p => p.favorite).map(p => p.id);
+  let HERO_FAVS = ALL.filter(p => p.favorite).map(p => p.id);
   if(!HERO_FAVS.length){ // no favorites curated yet → cycle an even spread of the whole album
     const N = Math.min(12, M.photos.length), step = M.photos.length / N;
     HERO_FAVS = Array.from({length:N}, (_, i) => M.photos[Math.floor(i*step)].id);
   }
-  const DAYOF = Object.fromEntries(M.photos.map(p => [p.id, p.day]));
+  const DAYOF = Object.fromEntries(ALL.map(p => [p.id, p.day]));
   let lang = localStorage.getItem('gp_lang') || 'en';
   let fullRes = localStorage.getItem('gp_fullres') === '1';
 
@@ -34,7 +39,8 @@
     return f;
   }
   function videoTile(v){
-    const f = el('figure','vid'); f.dataset.vid='1';
+    const f = el('figure','vid'); f.dataset.vid='1'; f.dataset.src=v.src; if(v.poster) f.dataset.poster=v.poster;
+    if(v.original) f.dataset.original=v.original;
     const img = new Image(); img.loading='lazy'; img.src=v.poster; img.alt=''; f.append(img);
     f.append(el('span','vbadge', v.dur||'')); f.append(el('span','vlabel','VIDEO'));
     return f;
@@ -53,10 +59,15 @@
     document.getElementById('timeline').replaceChildren(tl);
   }
   const renderGrid = () => { const g = el('div','fav-grid'); M.photos.forEach(p => g.append(figure(p))); document.getElementById('grid').replaceChildren(g); };
-  const renderFavorites = () => { const g=el('div','fav-grid'); M.photos.filter(p=>p.favorite).forEach(p=>g.append(figure(p))); document.getElementById('favorites').replaceChildren(g); };
+  const renderFavorites = () => {
+    const favs = ALL.filter(p=>p.favorite);
+    const g=el('div','fav-grid'); favs.forEach(p=>g.append(figure(p)));
+    document.getElementById('favorites').replaceChildren(g);
+    const sm = document.querySelector('.tab[data-view="favorites"] small'); if(sm) sm.textContent = favs.length;
+  };
   function renderBonus(){
     const b = M.bonus || {photos:[],videos:[]}; const g=el('div','fav-grid');
-    (b.photos||[]).forEach(id => byId[id] && g.append(figure(byId[id])));
+    (b.photos||[]).forEach(p => g.append(figure(p)));
     (b.videos||[]).forEach(v => g.append(videoTile(v)));
     document.getElementById('bonus').replaceChildren(g);
   }
@@ -65,9 +76,9 @@
 
   // ── attach lightbox clicks (figures only; video tiles have no data-id, so they won't open) ──
   document.querySelectorAll('figure[data-id]').forEach(f => { f.onclick = () => openModal(f); });
-  // video tiles: subtle press feedback, no lightbox (mirrors mockup behavior)
+  // video tiles open the video player overlay (they carry data-src, not data-id, so the photo lightbox skips them)
   document.querySelectorAll('figure[data-vid]').forEach(f => {
-    f.onclick = () => { if(f.animate) f.animate([{transform:'scale(.99)'},{transform:'scale(1)'}],160); };
+    f.onclick = () => openVideo(f.dataset.src, f.dataset.poster, f.dataset.original);
   });
 
   // ── i18n: EN/PT toggle, persisted to localStorage ──
@@ -102,8 +113,9 @@
 
   function setRow(id, val){ const elv=document.getElementById(id); elv.textContent = val||''; const row=elv.closest('.row'); if(row) row.style.display = val ? '' : 'none'; }
   function fill(m){
-    document.getElementById('mDay').textContent = `Day ${m.day}` + (m.phase ? ` · ${m.phase[lang]}` : '');
-    document.getElementById('mDate').textContent = dateTimeLabel(m.datetime);
+    // bonus images may lack a capture date (e.g. a screenshot) → leave the day/date lines blank rather than "Day null"
+    document.getElementById('mDay').textContent = (m.day != null) ? (`Day ${m.day}` + (m.phase ? ` · ${m.phase[lang]}` : '')) : '';
+    document.getElementById('mDate').textContent = m.datetime ? dateTimeLabel(m.datetime) : '';
     setRow('mModel', m.model); setRow('mFocal', m.focal); setRow('mFocal35', m.focal35);
     setRow('mF', m.fnumber ? `ƒ/${m.fnumber}` : ''); setRow('mShutter', m.exposure ? `${m.exposure} s` : '');
     setRow('mIso', m.iso); setRow('mProfile', m.profile || '');
@@ -135,6 +147,7 @@
   document.getElementById('infoBtn').onclick = () => modal.classList.toggle('noinfo');
   document.getElementById('fsBtn').onclick = fs;
   document.addEventListener('keydown', e => {
+    if(vmodal.classList.contains('open')){ if(e.key==='Escape' && !document.fullscreenElement) closeVideo(); return; }
     if(!modal.classList.contains('open')) return;
     if(e.key==='Escape' && !document.fullscreenElement) close_();
     else if(e.key==='ArrowLeft') step(-1);
@@ -142,6 +155,23 @@
     else if(e.key==='i' || e.key==='I') modal.classList.toggle('noinfo');
     else if(e.key==='f' || e.key==='F') fs();
   });
+
+  // ── video player overlay (bonus videos) ──
+  const vmodal = document.getElementById('vmodal'), vmVideo = document.getElementById('vmVideo'), vmDl = document.getElementById('vmDl');
+  function openVideo(src, poster, original){
+    if(!src) return;
+    if(poster) vmVideo.poster = poster; else vmVideo.removeAttribute('poster');
+    if(original){ vmDl.href = original; vmDl.style.display=''; } else { vmDl.style.display='none'; }
+    vmVideo.src = src; vmodal.classList.add('open');
+    const pr = vmVideo.play(); if(pr && pr.catch) pr.catch(()=>{}); // autoplay may be blocked; controls remain
+  }
+  function closeVideo(){
+    vmodal.classList.remove('open'); vmVideo.pause();
+    vmVideo.removeAttribute('src'); vmVideo.load(); // stop buffering
+    if(document.fullscreenElement) document.exitFullscreen();
+  }
+  document.getElementById('vmClose').onclick = closeVideo;
+  vmodal.addEventListener('click', e => { if(e.target === vmodal) closeVideo(); });
 
   // ── full-res toggle (persisted) ──
   (function(){
