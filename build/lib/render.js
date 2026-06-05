@@ -12,8 +12,10 @@ export function renderAlbum({ album, manifest, site }) {
     count: String(manifest.count), firstDate: manifest.firstDate,
     lastDate: manifest.lastDate, lastDay: String(manifest.lastDay),
   });
+  const attr = s => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
   return fill(T('base.html'), {
-    title: album.title.en, path: `/${album.slug}/`, body,
+    title: attr(album.title.en), path: `/${album.slug}/`, body,
+    ogDesc: attr(album.intro.en),
     site: JSON.stringify(site), manifest: JSON.stringify(manifest),
   });
 }

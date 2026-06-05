@@ -19,7 +19,9 @@
     HERO_FAVS = Array.from({length:N}, (_, i) => M.photos[Math.floor(i*step)].id);
   }
   const DAYOF = Object.fromEntries(ALL.map(p => [p.id, p.day]));
-  let lang = localStorage.getItem('gp_lang') || 'en';
+  // language: a saved choice wins; otherwise default to PT when the browser prefers Portuguese, else EN
+  const prefersPT = (navigator.languages || [navigator.language || '']).some(l => /^pt\b/i.test(l));
+  let lang = localStorage.getItem('gp_lang') || (prefersPT ? 'pt' : 'en');
   let fullRes = localStorage.getItem('gp_fullres') === '1';
 
   const el = (tag, cls, html) => { const e=document.createElement(tag); if(cls)e.className=cls; if(html!=null)e.innerHTML=html; return e; };
@@ -383,7 +385,10 @@
     const r = decodeURIComponent((location.hash || '').slice(1));
     if(r && byId[r]){
       const f = figForId(r); if(!f) return;
-      history.replaceState(null, '', location.pathname);
+      const tabId = f.closest('.view').id;                                  // the photo's own tab (timeline/bonus/…)
+      const base = (tabId === 'timeline') ? '' : '#' + tabId;
+      setTab(tabId);                                                        // show that tab behind the photo
+      history.replaceState({ tab: tabId }, '', location.pathname + base);   // album entry = the photo's tab → Back returns to it
       openUI(f);
       history.pushState({ photo: r }, '', '#' + r);
     } else if(TABS.includes(r)){
