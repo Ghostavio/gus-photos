@@ -19,7 +19,8 @@ export function renderAlbum({ album, manifest, site }) {
 }
 
 export function renderIndex({ albums, site }) {
-  const cards = albums.map(a => `<a class="album-card" href="/${a.slug}/">
-    <img src="${a.cover}" alt=""><div class="ac-body"><h3>${a.title.en}</h3><p>${a.count} photos</p></div></a>`).join('');
-  return fill(T('index.html'), { cards, site: JSON.stringify(site) });
+  // Single-album site for now: redirect the root to the (first) album rather than render a
+  // standalone landing page. Replace with a real multi-album index when there's more than one.
+  const target = albums.length ? `/${albums[0].slug}/` : '/';
+  return fill(T('index.html'), { target });
 }
