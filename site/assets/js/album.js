@@ -98,12 +98,18 @@
   document.getElementById('enBtn').onclick = () => setLang('en');
   document.getElementById('ptBtn').onclick = () => setLang('pt');
 
-  // ── tabs ──
+  // ── tabs (each gets a URL: #grid / #favorites / #bonus; timeline = no hash) ──
+  const TABS = ['timeline','grid','favorites','bonus'];
+  function setTab(view){
+    if(!TABS.includes(view)) view = 'timeline';
+    document.querySelectorAll('.tab').forEach(x => x.classList.toggle('on', x.dataset.view===view));
+    document.querySelectorAll('.view').forEach(v => v.classList.toggle('on', v.id===view));
+  }
   document.querySelectorAll('.tab').forEach(t => {
     t.onclick = () => {
-      document.querySelectorAll('.tab').forEach(x => x.classList.remove('on')); t.classList.add('on');
-      document.querySelectorAll('.view').forEach(v => v.classList.remove('on'));
-      document.getElementById(t.dataset.view).classList.add('on');
+      const view = t.dataset.view; setTab(view);
+      const target = (view==='timeline') ? '' : '#'+view;
+      if(location.hash !== target) history.pushState({ tab: view }, '', location.pathname + target);
     };
   });
 
@@ -165,14 +171,17 @@
     if(history.state && history.state.photo) history.back();               // pop the opened entry → back to the album URL
     else if(location.hash) history.replaceState(null, '', location.pathname);
   }
-  // browser Back/Forward — and visiting a shared #id link — drive the lightbox
+  // browser Back/Forward — and shared #id / #tab links — drive the lightbox and the active tab
   window.addEventListener('popstate', () => {
-    const id = decodeURIComponent((location.hash || '').slice(1));
-    if(id && byId[id]){
-      const f = figForId(id); if(!f) return;
+    const r = decodeURIComponent((location.hash || '').slice(1));
+    if(r && byId[r]){                              // photo route
+      const f = figForId(r); if(!f) return;
       if(modal.classList.contains('open')){ const i = list.indexOf(f); if(i >= 0){ idx = i; show(); } else openUI(f); }
       else openUI(f);
-    } else if(modal.classList.contains('open')) closeUI();
+    } else {                                       // tab route (or empty → timeline)
+      if(modal.classList.contains('open')) closeUI();
+      setTab(TABS.includes(r) ? r : 'timeline');
+    }
   });
   function fs(){ if(!document.fullscreenElement){ modal.requestFullscreen && modal.requestFullscreen(); } else { document.exitFullscreen(); } }
   document.getElementById('closeX').onclick = close_;
@@ -369,14 +378,16 @@
   // init i18n state (persisted lang + button states) before kicking off hero
   setLang(lang);
 
-  // deep link: if the page was opened at #<id>, show that photo (with an album entry behind it so Back exits)
+  // deep link on load: open a shared photo (#id) with an album entry behind it so Back exits, or show a shared tab (#grid…)
   (function(){
-    const id = decodeURIComponent((location.hash || '').slice(1));
-    if(id && byId[id]){
-      const f = figForId(id); if(!f) return;
+    const r = decodeURIComponent((location.hash || '').slice(1));
+    if(r && byId[r]){
+      const f = figForId(r); if(!f) return;
       history.replaceState(null, '', location.pathname);
       openUI(f);
-      history.pushState({ photo: id }, '', '#' + id);
+      history.pushState({ photo: r }, '', '#' + r);
+    } else if(TABS.includes(r)){
+      setTab(r);
     }
   })();
 
