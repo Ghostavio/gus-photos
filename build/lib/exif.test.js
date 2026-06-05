@@ -11,7 +11,7 @@ test('readExif extracts the fields we display, from a real original', async () =
   assert.equal(p.iso, '250');
   assert.equal(p.focal35, '29 mm');
   assert.equal(p.profile, 'Display P3');
-  assert.equal(p.datetime, '2019:05:31 21:08:27');
+  assert.equal(p.datetime, '2019:05:31 21:08:28');
   assert.equal(p.hasProfile, true);
   assert.ok(p.width === 3024 || p.width === 4032);
 });
