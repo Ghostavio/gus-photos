@@ -10,7 +10,7 @@
         </p>
         <div class="facts">
           <span><i></i>{{count}} <span class="en">photographs</span><span class="pt">fotografias</span></span>
-          <span><i></i>{{firstDate}} – {{lastDate}}</span>
+          <span><i></i>{{dateRange}}</span>
           <span><i></i>124 <span class="en">days</span><span class="pt">dias</span></span>
           <span><i></i>iPad Pro</span><span><i></i>Display P3</span>
         </div>
@@ -18,19 +18,19 @@
       <div class="hero-aside"><img class="mascot" src="/assets/mascot.avif" alt="" width="446" height="512"></div>
     </div>
     <div class="scrubber">
-      <span class="lbl">Day 1</span>
+      <span class="lbl"><span class="en">Day 1</span><span class="pt">Dia 1</span></span>
       <input type="range" id="scrub" min="1" max="124" value="1" aria-label="Scrub the grow">
-      <span class="lbl">Day {{lastDay}}</span>
+      <span class="lbl"><span class="en">Day {{lastDay}}</span><span class="pt">Dia {{lastDay}}</span></span>
     </div>
   </div>
 
   <div class="hero-stage" id="heroStage">
     <img class="layer show" id="layA" alt="">
     <img class="layer" id="layB" alt="">
-    <div class="hero-cap"><b id="heroDay">Day 1</b><span id="heroPhase"></span><span class="hint">drag the timeline to scrub</span></div>
+    <div class="hero-cap"><b id="heroDay"><span class="en">Day 1</span><span class="pt">Dia 1</span></b><span id="heroPhase"></span><span class="hint"><span class="en">drag the timeline to scrub</span><span class="pt">arraste a linha do tempo</span></span></div>
     <div class="hero-ctrl">
-      <button id="playBtn" title="Play / Pause">&#9208;</button>
-      <button id="heroFsBtn" title="Fullscreen">&#9974;</button>
+      <button id="playBtn" data-ten="Play / Pause" data-tpt="Reproduzir / Pausar">&#9208;</button>
+      <button id="heroFsBtn" data-ten="Fullscreen" data-tpt="Tela cheia">&#9974;</button>
     </div>
   </div>
 
@@ -55,19 +55,19 @@
     <div class="lb-bar">
       <span class="lb-count" id="mCount"></span>
       <div class="lb-actions">
-        <button id="zoomBtn" title="Full size / fit (Z)" aria-label="Toggle full-size zoom">
+        <button id="zoomBtn" data-ten="Full size / fit (Z)" data-tpt="Tamanho real / ajustar (Z)" aria-label="Toggle full-size zoom">
           <svg class="zi-in" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><line x1="15.6" y1="15.6" x2="21" y2="21"/><line x1="10.5" y1="7.8" x2="10.5" y2="13.2"/><line x1="7.8" y1="10.5" x2="13.2" y2="10.5"/></svg>
           <svg class="zi-out" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4H5a1 1 0 0 0-1 1v4M15 4h4a1 1 0 0 1 1 1v4M9 20H5a1 1 0 0 1-1-1v-4M15 20h4a1 1 0 0 0 1-1v-4"/></svg>
         </button>
-        <button id="infoBtn" title="Toggle details (I)">&#9432;</button>
-        <button id="fsBtn" title="Fullscreen (F)">&#9974;</button>
-        <button id="closeX" title="Close (Esc)">&times;</button>
+        <button id="infoBtn" data-ten="Toggle details (I)" data-tpt="Detalhes (I)">&#9432;</button>
+        <button id="fsBtn" data-ten="Fullscreen (F)" data-tpt="Tela cheia (F)">&#9974;</button>
+        <button id="closeX" data-ten="Close (Esc)" data-tpt="Fechar (Esc)">&times;</button>
       </div>
     </div>
     <button class="lb-nav prev" id="prevBtn">&#8249;</button>
     <div class="stage"><img id="mImg" alt=""></div>
     <button class="lb-nav next" id="nextBtn">&#8250;</button>
-    <div class="lb-hint">←/→ navigate · Z full size · I details · F fullscreen · Esc close</div>
+    <div class="lb-hint"><span class="en">←/→ navigate · Z full size · I details · F fullscreen · Esc close</span><span class="pt">←/→ navegar · Z tamanho real · I detalhes · F tela cheia · Esc fechar</span></div>
   </div>
   <aside class="meta" id="metaPanel">
     <div class="seg">
@@ -78,17 +78,17 @@
     <div class="m-day" id="mDay"></div>
     <div class="m-date" id="mDate"></div>
     <div class="badges"><span class="badge p3">Display P3</span><span class="badge hdr">HDR</span><span class="badge" id="mDims"></span></div>
-    <div class="row"><span class="k">Device</span><span class="v" id="mModel"></span></div>
-    <div class="row"><span class="k">Focal length</span><span class="v" id="mFocal"></span></div>
-    <div class="row"><span class="k">35mm equiv</span><span class="v" id="mFocal35"></span></div>
-    <div class="row"><span class="k">Aperture</span><span class="v" id="mF"></span></div>
-    <div class="row"><span class="k">Exposure</span><span class="v" id="mShutter"></span></div>
+    <div class="row"><span class="k"><span class="en">Device</span><span class="pt">Dispositivo</span></span><span class="v" id="mModel"></span></div>
+    <div class="row"><span class="k"><span class="en">Focal length</span><span class="pt">Distância focal</span></span><span class="v" id="mFocal"></span></div>
+    <div class="row"><span class="k"><span class="en">35mm equiv</span><span class="pt">Equiv. 35mm</span></span><span class="v" id="mFocal35"></span></div>
+    <div class="row"><span class="k"><span class="en">Aperture</span><span class="pt">Abertura</span></span><span class="v" id="mF"></span></div>
+    <div class="row"><span class="k"><span class="en">Exposure</span><span class="pt">Exposição</span></span><span class="v" id="mShutter"></span></div>
     <div class="row"><span class="k">ISO</span><span class="v" id="mIso"></span></div>
-    <div class="row"><span class="k">Color profile</span><span class="v" id="mProfile"></span></div>
+    <div class="row"><span class="k"><span class="en">Color profile</span><span class="pt">Perfil de cor</span></span><span class="v" id="mProfile"></span></div>
     <div class="fullres">
       <label class="switch"><input type="checkbox" id="fullresToggle"><span class="sw"></span></label>
       <div class="fr-txt"><span class="en">Load full-resolution photos</span><span class="pt">Carregar em resolução máxima</span>
-        <small id="resNote">2048px · faster</small></div>
+        <small id="resNote"><span class="en">2048px · faster</span><span class="pt">2048px · mais rápido</span></small></div>
     </div>
     <a class="dl" href="#"><span class="en">Download original</span><span class="pt">Baixar original</span></a>
     </div>
@@ -99,7 +99,7 @@
 </div>
 
 <div class="vmodal" id="vmodal">
-  <button class="vm-close" id="vmClose" title="Close (Esc)">&times;</button>
+  <button class="vm-close" id="vmClose" data-ten="Close (Esc)" data-tpt="Fechar (Esc)">&times;</button>
   <video id="vmVideo" controls playsinline preload="metadata"></video>
   <a class="vm-dl" id="vmDl" href="#" download><span class="en">Download original</span><span class="pt">Baixar original</span></a>
 </div>
