@@ -136,13 +136,44 @@
     document.getElementById('cCount').textContent = '';   // per-photo count; giscus fills it in
     if(!commentsPane.hidden) loadComments();
   }
-  function openModal(fig){
+  function figForId(id){               // find a photo's thumbnail (timeline first, then bonus, then anywhere)
+    return document.querySelector(`#timeline figure[data-id="${id}"]`)
+        || document.querySelector(`#bonus figure[data-id="${id}"]`)
+        || document.querySelector(`figure[data-id="${id}"]`);
+  }
+  function openUI(fig){                 // populate + show the lightbox from a figure's section — no history side-effects
     const sec = fig.closest('.view');
     list = [...sec.querySelectorAll('figure[data-id]')].sort((a,b)=>ORDER[a.dataset.id]-ORDER[b.dataset.id]);
-    idx = list.indexOf(fig); show(); modal.classList.add('open');
+    idx = list.indexOf(fig);
+    modal.classList.add('open'); show();
   }
-  function step(d){ idx = (idx+d+list.length)%list.length; show(); }
-  function close_(){ modal.classList.remove('open'); if(document.fullscreenElement) document.exitFullscreen(); }
+  function closeUI(){
+    if(zoomed) resetZoom();
+    modal.classList.remove('open');
+    if(document.fullscreenElement) document.exitFullscreen();
+  }
+  function openModal(fig){              // thumbnail click → open + push the per-photo URL (#id)
+    openUI(fig);
+    const id = fig.dataset.id; history.pushState({ photo: id }, '', '#' + id);
+  }
+  function step(d){
+    idx = (idx + d + list.length) % list.length; show();
+    const id = list[idx].dataset.id; history.replaceState({ photo: id }, '', '#' + id); // keep URL on the current photo (shareable), no new history
+  }
+  function close_(){
+    closeUI();
+    if(history.state && history.state.photo) history.back();               // pop the opened entry → back to the album URL
+    else if(location.hash) history.replaceState(null, '', location.pathname);
+  }
+  // browser Back/Forward — and visiting a shared #id link — drive the lightbox
+  window.addEventListener('popstate', () => {
+    const id = decodeURIComponent((location.hash || '').slice(1));
+    if(id && byId[id]){
+      const f = figForId(id); if(!f) return;
+      if(modal.classList.contains('open')){ const i = list.indexOf(f); if(i >= 0){ idx = i; show(); } else openUI(f); }
+      else openUI(f);
+    } else if(modal.classList.contains('open')) closeUI();
+  });
   function fs(){ if(!document.fullscreenElement){ modal.requestFullscreen && modal.requestFullscreen(); } else { document.exitFullscreen(); } }
   document.getElementById('closeX').onclick = close_;
   document.getElementById('prevBtn').onclick = () => step(-1);
@@ -337,6 +368,17 @@
 
   // init i18n state (persisted lang + button states) before kicking off hero
   setLang(lang);
+
+  // deep link: if the page was opened at #<id>, show that photo (with an album entry behind it so Back exits)
+  (function(){
+    const id = decodeURIComponent((location.hash || '').slice(1));
+    if(id && byId[id]){
+      const f = figForId(id); if(!f) return;
+      history.replaceState(null, '', location.pathname);
+      openUI(f);
+      history.pushState({ photo: id }, '', '#' + id);
+    }
+  })();
 
   if(HERO_FAVS.length){
     layers[0].src = VIEW(HERO_FAVS[0]); cap(HERO_FAVS[0], true);
