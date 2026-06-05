@@ -1,0 +1,18 @@
+{
+  "slug": "acervo-01",
+  "kicker": "Acervo 01 — 2019",
+  "title": { "en": "From seed to flower", "pt": "Da semente à flor" },
+  "intro": {
+    "en": "From May 31 to October 1, 2019, I grew three plants of my own — start to finish, seed to flower. This is the complete collection: 500 photographs documenting all five months of the grow, shot on an iPad Pro.",
+    "pt": "De 31 de maio a 1º de outubro de 2019, cultivei minha própria maconha — três plantas, da semente à flor. Este é o acervo completo: 500 fotografias documentando os cinco meses de cultivo, do início ao fim, registradas num iPad Pro."
+  },
+  "source": "~/maconhas-originals",
+  "phases": [
+    { "from": "2019-05-31", "to": "2019-06-27", "label": { "en": "Germination & Seedling", "pt": "Germinação e Muda" } },
+    { "from": "2019-06-28", "to": "2019-08-24", "label": { "en": "Vegetative", "pt": "Vegetativo" } },
+    { "from": "2019-08-25", "to": "2019-09-30", "label": { "en": "Flowering", "pt": "Floração" } },
+    { "from": "2019-10-01", "to": "2019-10-01", "label": { "en": "Harvest", "pt": "Colheita" } }
+  ],
+  "favorites": [],
+  "bonus": { "photos": [], "videos": [] }
+}
