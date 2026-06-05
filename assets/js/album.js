@@ -359,9 +359,14 @@
     shownLayer().src = VIEW(id); cap(id, false);
   }
   function nearestByDay(day){ let best=ALL_IDS[0], bd=1e9; ALL_IDS.forEach(id => { const df=Math.abs(DAYOF[id]-day); if(df<bd){ bd=df; best=id; } }); return best; }
+  function nextHi(){ // a random favorite, never the one already showing
+    if(HERO_FAVS.length <= 1) return hi;
+    let n; do { n = Math.floor(Math.random() * HERO_FAVS.length); } while(n === hi);
+    return n;
+  }
   function setPlay(p){
     playing = p; playBtn.innerHTML = p ? '&#9208;' : '&#9654;'; clearInterval(autoTimer);
-    if(p){ autoTimer = setInterval(() => { hi = (hi+1)%HERO_FAVS.length; crossTo(HERO_FAVS[hi], true); }, SLIDE_MS); }
+    if(p){ autoTimer = setInterval(() => { hi = nextHi(); crossTo(HERO_FAVS[hi], true); }, SLIDE_MS); }
   }
   playBtn.onclick = () => setPlay(!playing);
   scrub.addEventListener('input', () => { setPlay(false); showInstant(nearestByDay(+scrub.value)); });
@@ -397,7 +402,8 @@
   })();
 
   if(HERO_FAVS.length){
-    layers[0].src = VIEW(HERO_FAVS[0]); cap(HERO_FAVS[0], true);
+    hi = Math.floor(Math.random() * HERO_FAVS.length); // start on a random favorite
+    layers[0].src = VIEW(HERO_FAVS[hi]); cap(HERO_FAVS[hi], true);
     layers[0].style.animation = 'kbIn ' + (SLIDE_MS+1600) + 'ms ease forwards'; kbDir = 1;
     setPlay(true);
   }
