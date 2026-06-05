@@ -22,9 +22,12 @@
   .lang button.on{background:var(--accent);color:#0b0d0b;font-weight:600}
 
   .wrap{max-width:1240px;margin:0 auto;padding:0 26px}
-  .hero{padding:30px 0 24px;position:relative}
-  .mascot{position:absolute;top:6px;right:0;width:clamp(150px,16vw,240px);height:auto;pointer-events:none;user-select:none}
-  @media(max-width:860px){.mascot{display:none}}
+  .hero{padding:30px 0 24px}
+  .hero-row{display:flex;align-items:center;gap:24px}
+  .hero-text{flex:0 1 auto;min-width:0}
+  .hero-aside{flex:1 1 0;display:flex;justify-content:center;align-items:center;min-width:0}
+  .mascot{width:clamp(140px,17vw,230px);height:auto;max-width:100%;pointer-events:none;user-select:none}
+  @media(max-width:860px){.hero-aside{display:none}}
   .kicker{font-family:var(--mono);font-size:12px;letter-spacing:3px;text-transform:uppercase;color:var(--accent-dim)}
   .hero h1{font-family:var(--serif);font-weight:500;line-height:1.02;margin:.32em 0 .28em;font-size:clamp(2.5rem,6.4vw,4.4rem);letter-spacing:-.5px}
   .lede{max-width:64ch;font-size:clamp(1rem,1.6vw,1.18rem);color:#cfd3cc}
