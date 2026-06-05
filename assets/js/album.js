@@ -25,9 +25,13 @@
   let fullRes = localStorage.getItem('gp_fullres') === '1';
 
   const el = (tag, cls, html) => { const e=document.createElement(tag); if(cls)e.className=cls; if(html!=null)e.innerHTML=html; return e; };
+  const t = (en, pt) => `<span class="en">${en}</span><span class="pt">${pt}</span>`; // inline bilingual; CSS toggles via body.lang-*
   const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-  function dateLabel(dt){ const [d]=dt.split(' '); const [Y,Mo,D]=d.split(':').map(Number); return `${MONTHS[Mo-1]} ${D}`; }
-  function dateTimeLabel(dt){ const [d,t]=dt.split(' '); const [Y,Mo,D]=d.split(':').map(Number); return `${MONTHS[Mo-1]} ${D}, ${Y} · ${(t||'').slice(0,5)}`; }
+  const MONTHS_PT=['jan','fev','mar','abr','mai','jun','jul','ago','set','out','nov','dez'];
+  const MONTHS_PT_FULL=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  function dateLabelHTML(dt){ const [d]=dt.split(' '); const [,Mo,D]=d.split(':').map(Number); return t(`${MONTHS[Mo-1]} ${D}`, `${D} ${MONTHS_PT[Mo-1]}`); }
+  function dateTimeLabel(dt){ const [d,tm]=dt.split(' '); const [Y,Mo,D]=d.split(':').map(Number); const hm=(tm||'').slice(0,5);
+    return lang==='pt' ? `${D} de ${MONTHS_PT_FULL[Mo-1]} de ${Y} · ${hm}` : `${MONTHS[Mo-1]} ${D}, ${Y} · ${hm}`; }
   const phaseSpans = ph => ph ? `<span class="en">${ph.en}</span><span class="pt">${ph.pt}</span>` : '';
 
   function figure(p){
@@ -54,7 +58,7 @@
       const cur = p.phase ? p.phase.en : '';
       if(cur !== phEn){ phEn=cur; day=null; const ch=el('div','chapter'); ch.append(el('div','ph', phaseSpans(p.phase))); tl.append(ch); }
       if(p.day !== day){ day=p.day; const dg=el('div','day-group'); const h=el('div','day-head');
-        h.append(el('span','day-date', dateLabel(p.datetime))); h.append(el('span','day-n', `Day ${p.day}`));
+        h.append(el('span','day-date', dateLabelHTML(p.datetime))); h.append(el('span','day-n', t(`Day ${p.day}`, `Dia ${p.day}`)));
         dg.append(h); grid=el('div','grid'); dg.append(grid); tl.append(dg); }
       grid.append(figure(p));
     }
@@ -91,6 +95,7 @@
     document.getElementById('enBtn').classList.toggle('on', l==='en');
     document.getElementById('ptBtn').classList.toggle('on', l==='pt');
     document.documentElement.lang = l==='pt' ? 'pt-BR' : 'en';
+    document.querySelectorAll('[data-tpt]').forEach(e => { e.title = (l==='pt' ? e.dataset.tpt : e.dataset.ten) || ''; });
     // re-render open lightbox so #mDay phase + giscus lang follow the language
     if(modal.classList.contains('open')){
       show();
@@ -123,7 +128,7 @@
   function setRow(id, val){ const elv=document.getElementById(id); elv.textContent = val||''; const row=elv.closest('.row'); if(row) row.style.display = val ? '' : 'none'; }
   function fill(m){
     // bonus images may lack a capture date (e.g. a screenshot) → leave the day/date lines blank rather than "Day null"
-    document.getElementById('mDay').textContent = (m.day != null) ? (`Day ${m.day}` + (m.phase ? ` · ${m.phase[lang]}` : '')) : '';
+    document.getElementById('mDay').textContent = (m.day != null) ? ((lang==='pt'?'Dia ':'Day ') + m.day + (m.phase ? ` · ${m.phase[lang]}` : '')) : '';
     document.getElementById('mDate').textContent = m.datetime ? dateTimeLabel(m.datetime) : '';
     setRow('mModel', m.model); setRow('mFocal', m.focal); setRow('mFocal35', m.focal35);
     setRow('mF', m.fnumber ? `ƒ/${m.fnumber}` : ''); setRow('mShutter', m.exposure ? `${m.exposure} s` : '');
@@ -280,7 +285,7 @@
   // ── full-res toggle (persisted) ──
   (function(){
     const tg = document.getElementById('fullresToggle'), note = document.getElementById('resNote');
-    function applyNote(){ note.textContent = fullRes ? 'Full resolution · 4032px' : '2048px · faster'; }
+    function applyNote(){ note.innerHTML = fullRes ? t('Full resolution · 4032px','Resolução máxima · 4032px') : t('2048px · faster','2048px · mais rápido'); }
     tg.checked = fullRes; applyNote();
     tg.addEventListener('change', () => {
       fullRes = tg.checked; try{ localStorage.setItem('gp_fullres', fullRes?'1':'0'); }catch(e){}
@@ -336,10 +341,16 @@
   const heroDayEl = document.getElementById('heroDay'), heroPhaseEl = document.getElementById('heroPhase'), playBtn = document.getElementById('playBtn');
   // fallback day-threshold phase (only used when a photo carries no phase of its own)
   function phaseForDay(d){ return d<22?'Germination & Seedling':d<83?'Vegetative':d<119?'Flowering':'Harvest'; }
-  function phaseFor(id){ const p = byId[id]; if(p && p.phase) return p.phase[lang]; return phaseForDay(DAYOF[id]); }
+  const PHASE_PT = {'Germination & Seedling':'Germinação e Muda','Vegetative':'Vegetativo','Flowering':'Floração','Harvest':'Colheita'};
+  function phaseHTML(id){ // bilingual "· <phase>" — the photo's own phase if present, else the day-threshold fallback
+    const p = byId[id];
+    const en = (p && p.phase) ? p.phase.en : phaseForDay(DAYOF[id]);
+    const pt = (p && p.phase) ? p.phase.pt : (PHASE_PT[en] || en);
+    return t('· ' + en, '· ' + pt);
+  }
   function cap(id, moveHandle){
     const d = DAYOF[id]; if(moveHandle) scrub.value = d;
-    heroDayEl.textContent = 'Day ' + d; heroPhaseEl.textContent = '· ' + phaseFor(id);
+    heroDayEl.innerHTML = t('Day ' + d, 'Dia ' + d); heroPhaseEl.innerHTML = phaseHTML(id);
   }
   function shownLayer(){ return layers[0].classList.contains('show') ? layers[0] : layers[1]; }
   function crossTo(id, moveHandle){
