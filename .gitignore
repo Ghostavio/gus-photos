@@ -1,6 +1,10 @@
-# See http://help.github.com/ignore-files/ for more about ignoring files.
-
+node_modules/
+dist/
+.superpowers/
+*.local
 .DS_Store
-Thumbs.db
-/node_modules
-npm-debug.log
+# brainstorm screenshots (repo root)
+/*.jpeg
+/.playwright-mcp/
+release/
+build/fixtures/out/
