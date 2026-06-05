@@ -112,6 +112,16 @@
   .lb-nav.prev{left:6px;border-radius:0 12px 12px 0}
   .lb-nav.next{right:6px;border-radius:12px 0 0 12px}
   .lb-hint{position:absolute;bottom:12px;left:0;right:0;text-align:center;font-family:var(--mono);font-size:11px;color:#727a72;z-index:3}
+  /* lightbox 1:1 zoom + drag-to-pan */
+  .lb-actions button svg{display:block}
+  .zi-out{display:none}
+  .modal.zoom .zi-in{display:none}
+  .modal.zoom .zi-out{display:block}
+  .lb-actions button.on{background:rgba(255,255,255,.16)}
+  .modal.zoom .stage{padding:0;overflow:hidden;cursor:grab;touch-action:none}
+  .modal.zoom .stage:active{cursor:grabbing}
+  .modal.zoom .stage img{max-width:none;max-height:none;width:auto;height:auto;position:absolute;left:50%;top:50%;border-radius:0;box-shadow:none;will-change:transform}
+  .modal.zoom .lb-nav,.modal.zoom .lb-hint{display:none}
   .meta{width:344px;flex:none;background:var(--bg-2);border-left:1px solid var(--line);padding:28px 26px;overflow:auto}
   .modal.noinfo .meta{display:none}
   .m-day{font-family:var(--mono);font-size:12px;letter-spacing:1.5px;color:var(--accent);text-transform:uppercase}
