@@ -9,8 +9,8 @@
   "source": "~/maconhas-originals",
   "phases": [
     { "from": "2019-05-31", "to": "2019-06-27", "label": { "en": "Germination & Seedling", "pt": "Germinação e Muda" } },
-    { "from": "2019-06-28", "to": "2019-08-24", "label": { "en": "Vegetative", "pt": "Vegetativo" } },
-    { "from": "2019-08-25", "to": "2019-09-30", "label": { "en": "Flowering", "pt": "Floração" } },
+    { "from": "2019-06-28", "to": "2019-08-05", "label": { "en": "Vegetative", "pt": "Vegetativo" } },
+    { "from": "2019-08-06", "to": "2019-09-30", "label": { "en": "Flowering", "pt": "Floração" } },
     { "from": "2019-10-01", "to": "2019-10-01", "label": { "en": "Harvest", "pt": "Colheita" } }
   ],
   "favorites": [],

@@ -16,8 +16,10 @@ const RENDER_ONLY = process.env.GP_RENDER_ONLY === '1'; // reuse existing tiers 
 async function buildAlbum(slug) {
   const album = JSON.parse(fs.readFileSync(`albums/${slug}/album.json`, 'utf8'));
   if (RENDER_ONLY) {
-    const manifest = JSON.parse(fs.readFileSync(`albums/${slug}/manifest.json`, 'utf8'));
-    console.log(`[${slug}] render-only (${manifest.count} photos)`);
+    const saved = JSON.parse(fs.readFileSync(`albums/${slug}/manifest.json`, 'utf8'));
+    const manifest = assemble(album, saved.photos, site.originalsBaseUrl); // re-apply album.json (phases/favorites) from saved EXIF — no re-encode
+    fs.writeFileSync(`albums/${slug}/manifest.json`, JSON.stringify(manifest, null, 2));
+    console.log(`[${slug}] render-only re-assemble (${manifest.count} photos)`);
     fs.mkdirSync(path.join(DIST, slug), { recursive: true });
     fs.writeFileSync(path.join(DIST, slug, 'index.html'), renderAlbum({ album, manifest, site }));
     return { ...album, count: manifest.count, cover: manifest.photos.find(p => p.favorite)?.tiers.thumb || manifest.photos[0].tiers.thumb };
