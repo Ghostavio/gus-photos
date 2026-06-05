@@ -7,7 +7,7 @@
     "build": "node build/build.js",
     "release": "node build/release.js",
     "deploy": "bash build/deploy.sh",
-    "test": "node --test build/"
+    "test": "node --test 'build/**/*.test.js'"
   },
   "dependencies": {
     "sharp": "^0.33.5"
