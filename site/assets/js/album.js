@@ -246,4 +246,18 @@
     layers[0].style.animation = 'kbIn ' + (SLIDE_MS+1600) + 'ms ease forwards'; kbDir = 1;
     setPlay(true);
   }
+
+  // Warm the scrub-target view images (the unique nearest-by-day photos, ~one per day) in the
+  // background after first paint, so dragging the scrubber is responsive immediately. Sequential
+  // (one at a time) to avoid competing with initial render / saturating the connection.
+  setTimeout(function preloadScrub(){
+    const targets = [...new Set(Array.from({length: M.lastDay || 0}, (_, i) => nearestByDay(i + 1)))];
+    let i = 0;
+    (function next(){
+      if(i >= targets.length) return;
+      const im = new Image();
+      im.onload = im.onerror = () => { i++; next(); };
+      im.src = VIEW(targets[i]);
+    })();
+  }, 1800);
 })();

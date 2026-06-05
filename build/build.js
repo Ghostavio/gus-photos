@@ -11,9 +11,17 @@ const DIST = 'dist';
 const expand = p => p.replace(/^~/, os.homedir());
 const LIMIT = process.env.GP_LIMIT ? Number(process.env.GP_LIMIT) : Infinity;
 const SKIP_ENCODE = process.env.GP_SKIP_ENCODE === '1'; // reuse existing tiers; just re-read EXIF + re-render
+const RENDER_ONLY = process.env.GP_RENDER_ONLY === '1'; // reuse existing tiers + manifest; only re-copy assets + re-render HTML
 
 async function buildAlbum(slug) {
   const album = JSON.parse(fs.readFileSync(`albums/${slug}/album.json`, 'utf8'));
+  if (RENDER_ONLY) {
+    const manifest = JSON.parse(fs.readFileSync(`albums/${slug}/manifest.json`, 'utf8'));
+    console.log(`[${slug}] render-only (${manifest.count} photos)`);
+    fs.mkdirSync(path.join(DIST, slug), { recursive: true });
+    fs.writeFileSync(path.join(DIST, slug, 'index.html'), renderAlbum({ album, manifest, site }));
+    return { ...album, count: manifest.count, cover: manifest.photos.find(p => p.favorite)?.tiers.thumb || manifest.photos[0].tiers.thumb };
+  }
   const srcDir = expand(album.source);
   let files = fs.readdirSync(srcDir).filter(f => /\.(jpe?g)$/i.test(f)).sort();
   if (LIMIT < files.length) {            // even-spanning subset for smoke builds
@@ -40,7 +48,7 @@ async function buildAlbum(slug) {
 }
 
 async function main() {
-  if (!SKIP_ENCODE) fs.rmSync(DIST, { recursive: true, force: true });
+  if (!SKIP_ENCODE && !RENDER_ONLY) fs.rmSync(DIST, { recursive: true, force: true });
   fs.mkdirSync(DIST, { recursive: true });
   fs.rmSync(path.join(DIST, 'assets'), { recursive: true, force: true });
   fs.cpSync('site/assets', path.join(DIST, 'assets'), { recursive: true });
