@@ -8,3 +8,5 @@ dist/
 /.playwright-mcp/
 release/
 build/fixtures/out/
+/favicon/
+/mascot.png

@@ -52,30 +52,7 @@
     }
     document.getElementById('timeline').replaceChildren(tl);
   }
-  let masonryWidth = 0;
-  function layoutMasonry(){               // justified rows: chronological left-to-right, mixed aspect ratios scaled to a common row height
-    const root = document.getElementById('masonry');
-    const W = root.clientWidth;
-    if(!W || W === masonryWidth) return;  // skip when hidden (width 0) or unchanged
-    masonryWidth = W;
-    const gap = 13, target = 240;
-    root.replaceChildren();
-    let row = [], aspSum = 0;
-    const addRow = (justify) => {
-      const h = justify ? (W - gap * (row.length - 1)) / aspSum : target;
-      const rowEl = el('div', 'm-row');
-      row.forEach(p => {
-        const a = (p.width || 3) / (p.height || 4);
-        const f = figure(p);
-        f.style.width = (h * a) + 'px'; f.style.height = h + 'px';
-        f.onclick = () => openModal(f);
-        rowEl.append(f);
-      });
-      root.append(rowEl);
-    };
-    for(const p of M.photos){ const a = (p.width || 3) / (p.height || 4); row.push(p); aspSum += a; if(aspSum * target >= W){ addRow(true); row = []; aspSum = 0; } }
-    if(row.length) addRow(false);
-  }
+  const renderGrid = () => { const g = el('div','fav-grid'); M.photos.forEach(p => g.append(figure(p))); document.getElementById('grid').replaceChildren(g); };
   const renderFavorites = () => { const g=el('div','fav-grid'); M.photos.filter(p=>p.favorite).forEach(p=>g.append(figure(p))); document.getElementById('favorites').replaceChildren(g); };
   function renderBonus(){
     const b = M.bonus || {photos:[],videos:[]}; const g=el('div','fav-grid');
@@ -83,7 +60,7 @@
     (b.videos||[]).forEach(v => g.append(videoTile(v)));
     document.getElementById('bonus').replaceChildren(g);
   }
-  renderTimeline(); renderFavorites(); renderBonus(); // masonry is laid out lazily on first tab-show (needs a visible width)
+  renderTimeline(); renderGrid(); renderFavorites(); renderBonus();
   if(M.lastDay){ const sc=document.getElementById('scrub'); if(sc) sc.max = String(M.lastDay); }
 
   // ── attach lightbox clicks (figures only; video tiles have no data-id, so they won't open) ──
@@ -116,10 +93,8 @@
       document.querySelectorAll('.tab').forEach(x => x.classList.remove('on')); t.classList.add('on');
       document.querySelectorAll('.view').forEach(v => v.classList.remove('on'));
       document.getElementById(t.dataset.view).classList.add('on');
-      if(t.dataset.view === 'masonry') layoutMasonry();   // lazy justified layout (needs visible width)
     };
   });
-  let mzT; window.addEventListener('resize', () => { clearTimeout(mzT); mzT = setTimeout(() => { if(document.getElementById('masonry').classList.contains('on')) layoutMasonry(); }, 150); });
 
   // ── lightbox ──
   const modal = document.getElementById('modal'), mImg = document.getElementById('mImg');

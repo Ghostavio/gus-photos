@@ -54,6 +54,7 @@ async function main() {
   fs.mkdirSync(DIST, { recursive: true });
   fs.rmSync(path.join(DIST, 'assets'), { recursive: true, force: true });
   fs.cpSync('site/assets', path.join(DIST, 'assets'), { recursive: true });
+  fs.cpSync('site/static', DIST, { recursive: true }); // favicons + webmanifest at the site root
   fs.writeFileSync(path.join(DIST, 'CNAME'), 'gus.photos\n');
   const slugs = fs.readdirSync('albums').filter(s => fs.existsSync(`albums/${s}/album.json`));
   const albums = [];
