@@ -187,7 +187,11 @@
 
   // ── Details ⇄ Comments segmented toggle ──
   const detailsPane = document.getElementById('detailsPane'), commentsPane = document.getElementById('commentsPane');
+  // comments need a configured giscus repo/category; until then hide the toggle and show details only
+  const giscusOn = !!(SITE.giscus && SITE.giscus.repoId && SITE.giscus.categoryId);
   (function(){
+    const segBox = document.querySelector('.seg');
+    if(!giscusOn){ if(segBox) segBox.style.display = 'none'; commentsPane.hidden = true; detailsPane.hidden = false; return; }
     const bd = document.getElementById('segDetails'), bc = document.getElementById('segComments');
     function seg(comments){
       commentsPane.hidden = !comments; detailsPane.hidden = comments;
@@ -201,6 +205,7 @@
   let giscusLoaded = false;
   function currentId(){ return list[idx] ? list[idx].dataset.id : null; }
   function loadComments(){
+    if(!giscusOn) return;
     const id = currentId(); if(!id) return;
     const term = `${M.slug}:${id}`;
     const mount = document.getElementById('giscus-mount');
