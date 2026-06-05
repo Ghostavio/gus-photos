@@ -110,6 +110,7 @@
   // ── lightbox ──
   const modal = document.getElementById('modal'), mImg = document.getElementById('mImg');
   let list = [], idx = 0;
+  let zoomed = false, panX = 0, panY = 0, drag = null;  // lightbox 1:1 zoom + drag-to-pan
 
   function setRow(id, val){ const elv=document.getElementById(id); elv.textContent = val||''; const row=elv.closest('.row'); if(row) row.style.display = val ? '' : 'none'; }
   function fill(m){
@@ -127,10 +128,12 @@
 
   function show(){
     const id = list[idx].dataset.id, m = META(id);
+    resetZoom();                                          // changing photo exits 1:1 zoom
     mImg.src = fullRes ? FULL(id) : VIEW(id);
     fill(m);
     document.querySelector('.dl').href = FULL(id);
     document.getElementById('mCount').textContent = (idx+1) + ' / ' + list.length;
+    document.getElementById('cCount').textContent = '';   // per-photo count; giscus fills it in
     if(!commentsPane.hidden) loadComments();
   }
   function openModal(fig){
@@ -149,11 +152,70 @@
   document.addEventListener('keydown', e => {
     if(vmodal.classList.contains('open')){ if(e.key==='Escape' && !document.fullscreenElement) closeVideo(); return; }
     if(!modal.classList.contains('open')) return;
-    if(e.key==='Escape' && !document.fullscreenElement) close_();
+    if(e.key==='Escape'){ if(zoomed) setZoom(false); else if(!document.fullscreenElement) close_(); }
     else if(e.key==='ArrowLeft') step(-1);
     else if(e.key==='ArrowRight') step(1);
+    else if(e.key==='z' || e.key==='Z') setZoom(!zoomed);
     else if(e.key==='i' || e.key==='I') modal.classList.toggle('noinfo');
     else if(e.key==='f' || e.key==='F') fs();
+  });
+
+  // ── lightbox 1:1 zoom + drag-to-pan (magnifier toggles native full size; drag to move) ──
+  const zoomBtn = document.getElementById('zoomBtn'), stageEl = document.querySelector('.stage');
+  function clampPan(){
+    const r = stageEl.getBoundingClientRect();
+    const mx = Math.max(0, (mImg.naturalWidth  - r.width)  / 2);
+    const my = Math.max(0, (mImg.naturalHeight - r.height) / 2);
+    panX = Math.max(-mx, Math.min(mx, panX));
+    panY = Math.max(-my, Math.min(my, panY));
+  }
+  function applyPan(){ mImg.style.transform = `translate(calc(-50% + ${panX}px), calc(-50% + ${panY}px))`; }
+  function resetZoom(){
+    if(!zoomed) return;
+    zoomed = false; modal.classList.remove('zoom'); zoomBtn.classList.remove('on');
+    mImg.style.transform = ''; panX = panY = 0;
+  }
+  function setZoom(on){
+    if(on === zoomed) return;
+    const id = list[idx] && list[idx].dataset.id; if(!id) return;
+    if(on){
+      zoomed = true; modal.classList.add('zoom'); zoomBtn.classList.add('on');
+      panX = panY = 0; applyPan();
+      const full = FULL(id);
+      if(mImg.getAttribute('src') !== full){          // load native resolution for true full size (preload to avoid a flash)
+        const pre = new Image();
+        pre.onload = () => { if(zoomed){ mImg.src = full; clampPan(); applyPan(); } };
+        pre.src = full;
+      } else { clampPan(); applyPan(); }
+    } else {
+      resetZoom();
+      mImg.src = fullRes ? FULL(id) : VIEW(id);
+    }
+  }
+  zoomBtn.onclick = () => setZoom(!zoomed);
+  stageEl.addEventListener('pointerdown', e => {
+    if(!zoomed) return;
+    drag = { x: e.clientX, y: e.clientY, px: panX, py: panY };
+    try { stageEl.setPointerCapture(e.pointerId); } catch(_){}
+    e.preventDefault();
+  });
+  stageEl.addEventListener('pointermove', e => {
+    if(!drag) return;
+    panX = drag.px + (e.clientX - drag.x); panY = drag.py + (e.clientY - drag.y);
+    clampPan(); applyPan();
+  });
+  const endDrag = () => { drag = null; };
+  stageEl.addEventListener('pointerup', endDrag);
+  stageEl.addEventListener('pointercancel', endDrag);
+
+  // keep the Comments tab count in sync with giscus (replaces the static placeholder; blank when 0)
+  window.addEventListener('message', e => {
+    if(e.origin !== 'https://giscus.app') return;
+    const g = e.data && e.data.giscus;
+    if(g && g.discussion){
+      const n = g.discussion.totalCommentCount || 0;
+      document.getElementById('cCount').textContent = n ? ('· ' + n) : '';
+    }
   });
 
   // ── video player overlay (bonus videos) ──
