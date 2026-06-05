@@ -85,11 +85,11 @@
   .chip b{color:var(--accent);font-weight:600}
   .fav-star{position:absolute;top:8px;right:9px;font-size:13px;color:var(--amber);text-shadow:0 1px 3px rgba(0,0,0,.7);z-index:2}
 
-  .masonry{columns:4;column-gap:13px}
-  .masonry figure{break-inside:avoid;margin:0 0 13px}
-  .masonry img{width:100%}
-  @media(max-width:1080px){.masonry{columns:3}}
-  @media(max-width:680px){.masonry{columns:2}.grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}}
+  .masonry{display:flex;flex-direction:column;gap:13px}
+  .m-row{display:flex;gap:13px}
+  .masonry figure{margin:0;flex:0 0 auto}
+  .masonry figure img{width:100%;height:100%;object-fit:cover;display:block}
+  @media(max-width:680px){.grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}}
 
   .fav-intro{margin:0 0 20px;color:var(--muted);font-size:14px}
   .fav-intro b{color:var(--ink);font-weight:600}
