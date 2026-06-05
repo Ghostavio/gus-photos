@@ -8,7 +8,11 @@
   const VIEW  = id => byId[id].tiers.view;
   const FULL  = id => byId[id].tiers.full;
   const META  = id => byId[id];
-  const HERO_FAVS = M.photos.filter(p => p.favorite).map(p => p.id);
+  let HERO_FAVS = M.photos.filter(p => p.favorite).map(p => p.id);
+  if(!HERO_FAVS.length){ // no favorites curated yet → cycle an even spread of the whole album
+    const N = Math.min(12, M.photos.length), step = M.photos.length / N;
+    HERO_FAVS = Array.from({length:N}, (_, i) => M.photos[Math.floor(i*step)].id);
+  }
   const DAYOF = Object.fromEntries(M.photos.map(p => [p.id, p.day]));
   let lang = localStorage.getItem('gp_lang') || 'en';
   let fullRes = localStorage.getItem('gp_fullres') === '1';
@@ -23,7 +27,9 @@
     const f = el('figure'); f.dataset.id = p.id; if(p.favorite) f.dataset.fav='1';
     const img = new Image(); img.loading='lazy'; img.src = THUMB(p.id); img.alt='';
     f.append(img);
-    f.append(el('div','chip', `<b>●</b> ƒ/${p.fnumber} · ${p.exposure}s · ISO ${p.iso}`));
+    const bits = [];
+    if(p.fnumber) bits.push('ƒ/'+p.fnumber); if(p.exposure) bits.push(p.exposure+'s'); if(p.iso) bits.push('ISO '+p.iso);
+    if(bits.length) f.append(el('div','chip', '<b>●</b> '+bits.join(' · ')));
     if(p.favorite){ const s=el('span','fav-star'); s.textContent='★'; f.append(s); }
     return f;
   }
