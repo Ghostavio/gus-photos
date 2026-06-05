@@ -18,7 +18,7 @@ test('assemble orders, numbers days, assigns phases, marks favorites + tiers', (
   assert.equal(m.photos[0].day, 4);
   assert.equal(m.photos[0].favorite, true);
   assert.equal(m.photos[0].phase.en, 'Germination & Seedling');
-  assert.equal(m.photos[0].tiers.thumb, 'img/acervo-01/IMG_2290.thumb.avif');
+  assert.equal(m.photos[0].tiers.thumb, '/img/acervo-01/IMG_2290.thumb.avif');
   assert.equal(m.photos[0].tiers.full, 'https://rel/IMG_2290.full.avif');
   assert.equal(m.firstDate, '2019-05-31');
   assert.equal(m.lastDate, '2019-06-04');
