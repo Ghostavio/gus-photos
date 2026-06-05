@@ -1,22 +1,15 @@
 {
   "name": "gus-photos",
-  "version": "0.0.1",
-  "description": "Just some random photos from Facebook",
-  "main": "index.js",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
   "scripts": {
-    "start": "node index.js"
+    "build": "node build/build.js",
+    "release": "node build/release.js",
+    "deploy": "bash build/deploy.sh",
+    "test": "node --test build/"
   },
   "dependencies": {
-    "compression": "^1.6.1",
-    "ejs": "2.3.3",
-    "express": "4.13.3"
-  },
-  "engines": {
-    "node": "5.9.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Ghostavio/gus-photos"
-  },
-  "license": "MIT"
+    "sharp": "^0.33.5"
+  }
 }
