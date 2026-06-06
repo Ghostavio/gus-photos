@@ -73,8 +73,8 @@ Per-photo comments via **giscus** (GitHub Discussions), in the lightbox panel be
 - **Mapping:** `data-mapping="specific"`, `data-term="acervo-01:<photo-id>"` — one Discussion per photo, created **lazily on first comment**.
 - **Navigation:** ←/→ updates the giscus term via `postMessage`/`setConfig` (no reload); lazy-loaded on first open.
 - **Theme & i18n:** `dark_dimmed` theme; `data-lang` follows the EN/PT toggle (so PT browsers get Portuguese comments UI).
-- **Live wiring** (in `config/site.json`): repo `Ghostavio/gus-photos`, **category "Announcements"** (the giscus-recommended Announcement-type), `repoId` `MDEwOlJlcG9zaXRvcnkyMTEwODU3NQ==`, `categoryId` `DIC_kwDOAUIXX84C-l0-`. The album HTML embeds these via `window.__SITE__`; `album.js` hides the Comments toggle when they're empty and shows the live count from giscus's metadata message.
-- **Prereqs (done):** repo public, Discussions enabled, giscus app installed, Announcements category present.
+- **Live wiring** (in `config/site.json`): repo `Ghostavio/gus-photos`, **category "General"**, `repoId` `MDEwOlJlcG9zaXRvcnkyMTEwODU3NQ==`, `categoryId` `DIC_kwDOAUIXX84C-l0_`. The album HTML embeds these via `window.__SITE__`; `album.js` hides the Comments toggle when they're empty and shows the live count from giscus's metadata message.
+- **Prereqs (done):** repo public, Discussions enabled, giscus app installed, the General category in use.
 
 ---
 
@@ -241,7 +241,7 @@ Playwright-driven verification of every feature (color spot-check, tabs/timeline
 - **Comprehensive i18n** of JS-generated text + dates + tooltips + **browser-language auto-detect** — expanded well beyond the original toggle.
 - **SEO/social** (og:image, meta description, Twitter cards) + **Google Analytics** — added.
 - **Root is a redirect** to the album (single-album site) rather than an album-cards index — deferred until album #2.
-- **giscus category is "Announcements"** (recommended type), not a dedicated "Comments" category.
+- **giscus category is "General"** (the repo's default open category), not a dedicated "Comments" category.
 - **Hosting:** Pages is served from a **`gh-pages` branch** (force-pushed `dist/`), not directly from `main`; redeploys of small files use the **Contents API**.
 - **Tiers:** `view` is **q82**, `full`/`thumb` **q80** (chosen from the quality A/B). Real footprint: Pages ~478 MB, Release ~1.27 GB.
 - Intro copy tweaked: EN "from start to finish"; PT uses a comma instead of the em-dash.
