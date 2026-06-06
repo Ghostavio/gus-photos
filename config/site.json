@@ -2,5 +2,5 @@
   "domain": "gus.photos",
   "releaseTag": "acervo-01",
   "originalsBaseUrl": "https://github.com/Ghostavio/gus-photos/releases/download/acervo-01",
-  "giscus": { "repo": "Ghostavio/gus-photos", "repoId": "MDEwOlJlcG9zaXRvcnkyMTEwODU3NQ==", "category": "General", "categoryId": "DIC_kwDOAUIXX84C-l0_" }
+  "giscus": { "repo": "Ghostavio/gus-photos", "repoId": "MDEwOlJlcG9zaXRvcnkyMTEwODU3NQ==", "category": "Announcements", "categoryId": "DIC_kwDOAUIXX84C-l0-" }
 }
