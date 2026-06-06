@@ -137,6 +137,7 @@
     // P3 badge only if profile present; HDR badge only if hdr:
     document.querySelector('.badge.p3').style.display = m.profile ? '' : 'none';
     document.querySelector('.badge.hdr').style.display = m.hdr ? '' : 'none';
+    document.getElementById('mFav').classList.toggle('on', !!m.favorite);   // amber star, same as the grid
   }
 
   function show(){
@@ -432,4 +433,14 @@
       im.src = VIEW(targets[i]);
     })();
   }, 1800);
+
+  // ── scroll-to-top button: appears only after the user scrolls down ──
+  (function(){
+    const btn = document.getElementById('toTop');
+    if(!btn) return;
+    const onScroll = () => btn.classList.toggle('show', window.scrollY > 400);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    btn.onclick = () => window.scrollTo({ top: 0, behavior: 'smooth' });
+    onScroll();
+  })();
 })();
